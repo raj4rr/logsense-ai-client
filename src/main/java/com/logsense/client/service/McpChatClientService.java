@@ -143,6 +143,7 @@ public class McpChatClientService {
             toolArgs.put("type", defaultType);
             toolArgs.put("source", defaultSource);
             toolArgs.put("incident", trimmed);
+            toolArgs.put("limit", 50);
         } else if (lower.contains("trace") || lower.contains("correlat")) {
             matchedTool = "correlate_logs";
             toolArgs.put("type", defaultType);
@@ -152,10 +153,12 @@ public class McpChatClientService {
             matchedTool = "detect_anomalies";
             toolArgs.put("type", defaultType);
             toolArgs.put("source", defaultSource);
+            toolArgs.put("limit", 50);
         } else if (lower.contains("health") || lower.contains("status")) {
             matchedTool = "get_service_health";
             toolArgs.put("type", defaultType);
             toolArgs.put("source", defaultSource);
+            toolArgs.put("limit", 50);
         } else if (lower.contains("error") || lower.contains("fatal") || lower.contains("failed") || lower.contains("timeout")) {
             matchedTool = "get_error_logs";
             toolArgs.put("type", defaultType);
@@ -166,6 +169,7 @@ public class McpChatClientService {
             toolArgs.put("type", defaultType);
             toolArgs.put("source", defaultSource);
             toolArgs.put("question", trimmed);
+            toolArgs.put("limit", 50);
         }
 
         Object toolResult = executeMcpTool(matchedTool, toolArgs);
