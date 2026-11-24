@@ -320,9 +320,18 @@
             color: #94a3b8;
         }
 
-        /* Suggestions Carousel */
+        /* Suggestions Carousel & Duration Filter */
         .suggestions-bar {
-            padding: 12px 36px 6px 36px;
+            padding: 10px 36px 6px 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .bar-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .suggestions-label {
@@ -331,7 +340,37 @@
             letter-spacing: 0.08em;
             color: var(--text-muted);
             font-weight: 600;
-            margin-bottom: 8px;
+        }
+
+        .duration-chips {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .duration-chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            border-radius: 9999px;
+            padding: 3px 9px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .duration-chip:hover {
+            border-color: var(--accent);
+            color: var(--text-main);
+        }
+
+        .duration-chip.active {
+            background: var(--tag-bg);
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
         }
 
         .suggestions-row {
@@ -491,7 +530,16 @@
         </div>
 
         <div class="suggestions-bar">
-            <div class="suggestions-label">💡 Suggested Diagnostic Prompts</div>
+            <div class="bar-header-row">
+                <div class="suggestions-label">💡 Suggested Diagnostic Prompts</div>
+                <div class="duration-chips">
+                    <span style="font-size: 0.7rem; color: var(--text-muted); margin-right: 2px;">Duration:</span>
+                    <button class="duration-chip" data-duration="within 1 minute" onclick="appendDuration(this)">1 min</button>
+                    <button class="duration-chip" data-duration="in the last 10 minutes" onclick="appendDuration(this)">10 min</button>
+                    <button class="duration-chip" data-duration="within 1 hour" onclick="appendDuration(this)">1 hour</button>
+                    <button class="duration-chip" data-duration="in the last 1 day" onclick="appendDuration(this)">1 day</button>
+                </div>
+            </div>
             <div class="suggestions-row" id="promptsRow"></div>
         </div>
 
@@ -551,6 +599,23 @@
             userInput.value = promptText;
             userInput.focus();
             send();
+        };
+
+        window.appendDuration = function(btn) {
+            const duration = btn.getAttribute('data-duration');
+            const isActive = btn.classList.contains('active');
+            document.querySelectorAll('.duration-chip').forEach(c => c.classList.remove('active'));
+            if (!isActive) {
+                btn.classList.add('active');
+                let current = userInput.value.trim();
+                current = current.replace(/\s+(within|in the last|in|last|past)\s+(1|one|10|24)?\s*(m|min|minute|minutes|h|hr|hour|hours|d|day|days)\b.*$/i, '').trim();
+                if (current.length > 0) {
+                    userInput.value = current + ' ' + duration;
+                } else {
+                    userInput.value = 'Show all ERROR logs ' + duration;
+                }
+            }
+            userInput.focus();
         };
 
         window.reconnect = async function() {
